@@ -1,0 +1,10 @@
+google-genai
+requests
+streamlit
+fastapi
+uvicorn
+python-multipart
+chromadb
+sentence-transformers
+python-dotenv
+pydantic
