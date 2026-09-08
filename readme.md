@@ -6,7 +6,8 @@ The system retrieves relevant sections from the uploaded policies and uses an LL
 
 ## Features
 
-- Upload HR policy documents in Markdown format
+- Upload HR policy documents in Markdown and PDF format
+- Extract text and tables from PDF documents
 - Section-aware document chunking
 - Local semantic embeddings using `all-MiniLM-L6-v2`
 - ChromaDB vector store for retrieval
@@ -112,6 +113,16 @@ ChromaDB — vector database
 Sentence Transformers — local text embeddings
 Gemini — answer generation
 Pydantic — request and response validation
+PyMuPDF4LLM — PDF text and table extraction
+
+### Document Formats
+
+The application supports:
+
+- Markdown (`.md`)
+- PDF (`.pdf`)
+
+PDF documents are converted into a Markdown representation during ingestion. Detected tables are preserved as Markdown tables, allowing them to pass through the same chunking, embedding, retrieval, and generation pipeline as normal policy text.
 
 # Models
 ## Embedding Model
@@ -146,7 +157,9 @@ The API key is loaded from an environment variable and is not stored in the sour
    python -m venv .venv
    source .venv/bin/activate
 3. Install dependencies
+
    pip install -r requirements.txt
+
 4. Configure the Gemini API key
 
    Create a .env file in the project root:
@@ -191,7 +204,7 @@ The API key is loaded from an environment variable and is not stored in the sour
 
    Use the Admin — Upload Policy section in the frontend.
 
-   Select a Markdown (.md) HR policy document and click Upload Policy.
+   Select a Markdown (.md) or PDF (.pdf) HR policy document and click Upload Policy.
 
    The backend will:
 
@@ -322,15 +335,13 @@ If the uploaded policies do not contain enough information to answer a question,
 
    Current limitations include:
 
-1. Markdown documents only
-2. Basic semantic retrieval
-3. No hybrid keyword + semantic search
-4. No reranking model
-5. No document version history
-6. No automated evaluation dataset
-7. No PDF/table extraction
+1. Basic semantic retrieval
+2. No hybrid keyword + semantic search
+3. No reranking model
+4. No document version history
+5. No automated evaluation dataset
 
-   These can be addressed as future improvements.
+These can be addressed as future improvements.
 ## Future Improvements
 
    Potential improvements include:
@@ -338,16 +349,16 @@ If the uploaded policies do not contain enough information to answer a question,
 1. Hybrid BM25 + vector retrieval
 2. Query normalization for abbreviations such as CL, SL, and PL
 3. Reranking retrieved chunks
-4. PDF ingestion
-5. Automated retrieval and answer evaluation
-6. Document versioning
-7. User feedback
-8. Asynchronous document ingestion
+4. Automated retrieval and answer evaluation
+5. Document versioning
+6. User feedback
+7. Asynchronous document ingestion
+8. Improved extraction for complex and scanned PDFs
 
 ## Security
 
    API keys must be stored in environment variables.
 
-   Do not commit .env or other secrets to the repository.
+   Not to commit .env or other secrets to the repository.
 
-   Runtime-generated ChromaDB and uploaded documents are also excluded from Git.
+   Runtime-generated ChromaDB and uploaded documents are excluded from Git.

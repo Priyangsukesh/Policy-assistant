@@ -1,10 +1,21 @@
 from pathlib import Path
 import re
+import pymupdf4llm
 def load_document(file_path: str) -> str:
-    path=Path(file_path)
+    path = Path(file_path)
+
     if not path.exists():
         raise FileNotFoundError(f"File not found: {file_path}")
-    return path.read_text(encoding='utf-8')
+
+    if path.suffix.lower() == ".md":
+        return path.read_text(encoding="utf-8")
+
+    if path.suffix.lower() == ".pdf":
+        return pymupdf4llm.to_markdown(str(path))
+
+    raise ValueError(
+        "Unsupported file type. Only Markdown and PDF files are supported."
+    )
 def chunk_document(content: str, document_name: str) -> list[dict]:
     chunks = []
     current_section="General"
@@ -24,7 +35,6 @@ def chunk_document(content: str, document_name: str) -> list[dict]:
             current_section=heading_match.group(2).strip()
         else:
             current_lines.append(line)
-    # Append the last section if it exists
     if current_lines:
         chunks.append({
             "text": "\n".join(current_lines).strip(),

@@ -38,11 +38,11 @@ async def upload_policy(file: UploadFile = File(...)):
             detail="No filename provided."
         )
 
-    if not file.filename.lower().endswith(".md"):
+    if not file.filename.lower().endswith((".md", ".pdf")):
         raise HTTPException(
-            status_code=400,
-            detail="Only Markdown (.md) files are supported."
-        )
+        status_code=400,
+        detail="Only Markdown (.md) and PDF (.pdf) files are supported."
+    )
     safe_filename = Path(file.filename).name
     file_path = UPLOAD_DIR / safe_filename
 

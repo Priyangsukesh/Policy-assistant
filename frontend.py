@@ -8,12 +8,11 @@ API_URL = "http://127.0.0.1:8000"
 st.title("HR Policy Assistant")
 
 st.subheader("Admin — Upload Policy")
-
+st.write("Upload HR policy documents in Markdown (.md) or PDF (.pdf) format")
 uploaded_file = st.file_uploader(
-    "Upload a Markdown policy document",
-    type=["md"]
+    "Upload a policy document",
+    type=["md", "pdf"]
 )
-
 if st.button("Upload Policy"):
     if uploaded_file is None:
         st.warning("Please select a file.")
@@ -22,7 +21,7 @@ if st.button("Upload Policy"):
             "file": (
                 uploaded_file.name,
                 uploaded_file.getvalue(),
-                "text/markdown"
+                "text/markdown" if uploaded_file.type == "text/markdown" else "application/pdf"
             )
         }
 

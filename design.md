@@ -27,36 +27,36 @@ The system consists of the following components:
 ### Data Flow
 
 #### Document ingestion
-```text
-Markdown document
-      ↓
-Load document
-      ↓
-Section-aware chunking
-      ↓
-Generate embeddings
-      ↓
-Store in ChromaDB
-      ↓
-Ready for retrieval
 
-Employee question
-      ↓
-Generate query embedding
-      ↓
-ChromaDB semantic search
-      ↓
-Relevance threshold
-      ↓
-Retrieved policy context
-      ↓
-Gemini
-      ↓
-Structured answer + citations
-      ↓
-Citation validation
-      ↓
-API / Frontend
+```text
+                    Uploaded Policy
+                         │
+              ┌──────────┴──────────┐
+              │                     │
+              ▼                     ▼
+       Markdown (.md)          PDF (.pdf)
+              │                     │
+              │                     ▼
+              │             PDF text & table
+              │                extraction
+              │                     │
+              │                     ▼
+              │              Markdown
+              │              representation
+              │                     │
+              └──────────┬──────────┘
+                         │
+                         ▼
+                Section-aware chunking
+                         │
+                         ▼
+                  Generate embeddings
+                         │
+                         ▼
+                     ChromaDB
+                         │
+                         ▼
+                  Ready for retrieval
 ```
 
 ## 3. Chunking Strategy
@@ -79,8 +79,27 @@ Section: 4.1 Casual leave carry-forward
 Content:
 Employees may carry forward a maximum of 8 days...
 
+### PDF Processing
 
----
+PDF documents are first converted into Markdown using PyMuPDF4LLM.
+
+The extraction process preserves normal document text and detected tables in Markdown form. The resulting Markdown representation is then passed through the same section-aware chunking pipeline used for native Markdown documents.
+
+This allows PDF and Markdown documents to share the same downstream retrieval architecture:
+
+```text
+PDF
+ ↓
+PDF text/table extraction
+ ↓
+Markdown representation
+ ↓
+Section-aware chunking
+ ↓
+Embeddings
+ ↓
+ChromaDB
+```
 
 ## 4. Retrieval Strategy
 
@@ -271,13 +290,12 @@ The current implementation intentionally focuses on a small, reliable base RAG s
 
 Current limitations include:
 
-- Only Markdown (`.md`) policy documents are supported.
 - Retrieval currently uses semantic vector search rather than hybrid retrieval.
 - No dedicated reranking model is currently used.
 - The relevance threshold is empirically configured for the current embedding model and dataset.
 - Document replacement is based on filename and does not maintain historical versions.
 - There is no automated evaluation dataset yet.
-- PDF and complex table extraction are not currently supported.
+- Complex layouts and scanned PDFs may require OCR or specialized extraction techniques.
 - The current system is designed for a small collection of HR policy documents rather than large-scale production workloads.
 
 ## 10. Two-Week Hardening Plan
@@ -309,11 +327,9 @@ Evaluation could measure:
 
 This would make retrieval and grounding improvements measurable instead of relying only on manual testing.
 
-### 3. Add PDF support
+### 3. Improve PDF extraction
 
-Extend ingestion to support PDF documents while preserving meaningful sections and tables where possible.
-
-The extraction pipeline would need to handle differences between normal text, headings, and tabular policy information.
+The current system supports PDF text and detected table extraction. Further hardening could improve handling of scanned documents, complex multi-page tables, unusual layouts, and OCR-based extraction.
 
 ### 4. Add document versioning
 
