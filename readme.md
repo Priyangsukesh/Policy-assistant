@@ -357,8 +357,41 @@ These can be addressed as future improvements.
 
 ## Security
 
-   API keys must be stored in environment variables.
+   API keys stored in environment variables.
 
-   Not to commit .env or other secrets to the repository.
+   Not  committed .env or other secrets to the repository.
 
    Runtime-generated ChromaDB and uploaded documents are excluded from Git.
+## Demo
+
+### Application
+
+![HR Policy Assistant](docs/screenshots/home%20page.png)
+
+### Policy Upload
+
+![Policy Upload](docs/screenshots/policy-upload.png)
+
+### Factual Question
+
+![Factual Answer](docs/screenshots/factual%20question.png)
+
+### Table Question
+
+![Table Answer](docs/screenshots/table_answer.png)
+
+### Grounded Refusal
+
+![Refusal](docs/screenshots/refusal.png)
+
+### Multi-document Retrieval
+
+![Multi-document Answer](docs/screenshots/multi_document_retreival.png)
+
+### PDF Support
+
+![PDF Upload](docs/screenshots/pdf_upload.png)
+
+### Video Demo
+
+[Watch the full application demo](https://drive.google.com/file/d/1dk8WqA3uM8RsZX7e2bVQ7ht3gvNhC35W/view?usp=sharing)
